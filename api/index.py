@@ -10,7 +10,7 @@ try:
 except Exception as e:
     print(e)
 
-from . import db
+from api import db
 
 
 """
@@ -121,6 +121,19 @@ def login():
             return redirect('/error')
 
 
-@app.route('/about')
-def about():
-    return 'About'
+@app.route('/logout', methods=['POST'])
+def logout():
+    logout_user()    
+    return jsonify(**{'result': 200, 'data': {'message': 'logout success'}})
+
+
+@app.route('/user_info', methods=['POST'])
+def user_info():
+    if current_user.is_authenticated:
+        resp = {"result": 200,
+                "data": current_user.to_json()}
+    else:
+        resp = {"result": 401,
+                "data": {"message": "user no login"}}
+    return jsonify(**resp)
+
