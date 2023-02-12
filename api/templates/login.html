@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<main class="pa4 black-80 helvetica">
+	<form class="measure center" action="/login" method="post">
+		<fieldset id="sign_in" class="ba b--transparent ph0 mh0">
+			<h1>Sign in</h1>
+
+			<div class="mt3">
+				<label class="db fw6 lh-copy f6">username</label>
+				<input class="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="username" name="username" id="username">			
+			</div>
+			<div class="mt3">
+				<label class="db fw6 lh-copy f6">password</label>
+				<input class="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="password" name="password" id="password">			
+			</div>
+		</fieldset>
+
+		<div class="">
+			<input class="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="submit" value="Sign in">
+		</div>
+	</form>
+</main>
+{% endblock %}
