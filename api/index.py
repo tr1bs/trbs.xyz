@@ -1,13 +1,8 @@
 from flask import Flask, Response, request, redirect, jsonify, url_for, send_file, render_template, session, abort, Markup, json
 import os
 from flask_cors import CORS
-import psycopg2
-from werkzeug.security import generate_password_hash, check_password_hash
-from werkzeug.utils import secure_filename
-from werkzeug.datastructures import FileStorage
 from datetime import datetime, date, timedelta
 import json
-
 from flask_login import LoginManager, current_user, login_user, login_required, logout_user, UserMixin
 import sys
 try:
@@ -15,6 +10,7 @@ try:
 except Exception as e:
     print(e)
 
+from . import db
 
 
 """
@@ -36,83 +32,6 @@ todo: pool connections in psycopg
 
 
 
-class User(object):
-    def __init__(self, user_id, username, email):
-        self.user_id = user_id
-        self.username= username
-        self.authenticated = True
-        self.email = email
-
-    def is_active(self): return True
-
-    def get_id(self): return self.user_id
-
-    def is_authenticated(self): return self.authenticated
-
-    def is_anonymous(self): return False   
-
-
-connection = "dbname={} user={} host={} password={} port='5432'".format(os.getenv('PGDATABASE'), os.getenv('PGUSER'), os.getenv('PGHOST'), os.getenv('PGPASSWORD'))
-
-def select(sql):
-    conn = psycopg2.connect(connection)
-    cur = conn.cursor()
-    cur.execute(sql)
-    data = cur.fetchall()
-    cur.close()
-    conn.close()
-    print('selected data successfully: ', sql)
-    if data:
-        data = data[0]
-        return data
-    else:
-        return False
-
-
-def select_user(username):
-    sql = "SELECT * from users where username = '" + username + "';"
-    return select(sql)
-
-
-def select_user_id(id):
-    sql = "SELECT * from users where id = '" + str(id) + "';"
-    return select(sql)
-
-
-def insert(sql):
-    try: 
-        conn = psycopg2.connect(connection)
-        cur = conn.cursor()
-        cur.execute(sql)
-        conn.commit()
-        cur.close()
-        conn.close()
-        return {"success": True, "message": "data inserted successfully" }
-    except Exception as e:
-        print(e)
-        return {"success": False, "message": str(e)}
-
-
-def register_user(request):
-    username = request.values.get('username')
-    password = request.values.get('password')
-    email = request.values.get('email')
-    data = select_user(username)
-
-    if not data:
-        # todo: sanitize this
-            # add bsv wallet
-        generate_user = '''insert into users (username, email, hash) values ('{}', '{}', '{}') ON CONFLICT DO NOTHING;
-                        '''.format(username, email, generate_password_hash(password), username)
-
-        r = insert(generate_user)
-        return r
-
-    else:
-        return {"success": False, "message": "Failed registration"}
-    
-
-
 app = Flask(__name__, template_folder="templates", static_folder="static", static_url_path="/static")
 CORS(app)
 
@@ -125,8 +44,8 @@ app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=2)
 
 @login_manager.user_loader
 def load_user(user_id):
-    u = select_user_id(user_id)
-    return User(u[0], u[1], u[2])
+    u = db.select_user_id(user_id)
+    return db.User(u[0], u[1], u[2])
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -176,7 +95,7 @@ def login():
             if data == []:
                 print('error: user is not registered')
 
-            print(data)
+            # print(data)
             user_id = data[0]
             hash = data[3]
             username = data[1]
@@ -189,9 +108,9 @@ def login():
                 session['username'] = username
                 session['email'] = email
 
-                user = User(user_id, username, email)            
+                user = db.User(user_id, username, email)            
                 login_user(user)
-                print('logged in')
+                print('logged in: ', username)
 
                 return redirect('/')
             else:
