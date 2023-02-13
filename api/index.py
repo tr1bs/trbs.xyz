@@ -13,6 +13,7 @@ except Exception as e:
 from api import db
 
 
+
 """
 
 This architecture is interesting because its a "fat" version of serving html over wire
@@ -25,7 +26,9 @@ Regardless of all of this I think the main point in RAD is productivity
 As long as the meat of the api is data first then you open up the doors to whatever
 This on vercel is the cleanest minimal structure w/ ci/cd
 
-todo: pool connections in psycopg
+todo: 
+    use guide on hub to auto generate keys/wallet
+    pool connections in psycopg
     convert print to log
     todo grabber
 """
@@ -45,7 +48,10 @@ app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=2)
 @login_manager.user_loader
 def load_user(user_id):
     u = db.select_user_id(user_id)
-    return db.User(u[0], u[1], u[2])
+    if u:
+        return db.User(u[0], u[1], u[2], u[3])
+    else:
+        return False
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -65,7 +71,7 @@ def register():
         return render_template('register.html')
 
     if request.method == 'POST':
-        r = register_user(request)
+        r = db.register_user(request)        
         if r["success"]:
             return redirect('/login')
         else:
@@ -108,9 +114,11 @@ def login():
                 session['username'] = username
                 session['email'] = email
 
-                user = db.User(user_id, username, email)            
+                wif = utils.create_wallet()
+
+                user = db.User(user_id, username, email, wif)
                 login_user(user)
-                print('logged in: ', username)
+                print('logged in: ', username)                
 
                 return redirect('/')
             else:

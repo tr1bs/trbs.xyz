@@ -4,13 +4,15 @@ import psycopg2
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import FileStorage
+from api import utils
 
 class User(object):
-    def __init__(self, user_id, username, email):
+    def __init__(self, user_id, username, email, wif):
         self.user_id = user_id
         self.username= username
         self.authenticated = True
         self.email = email
+        self.wif = wif
 
     def to_json(self): return {"username": self.username, "email": self.email}
 
@@ -71,10 +73,11 @@ def register_user(request):
     data = select_user(username)
 
     if not data:
+        wif = utils.create_wallet()
         # todo: sanitize this
             # add bsv wallet
-        generate_user = '''insert into users (username, email, hash) values ('{}', '{}', '{}') ON CONFLICT DO NOTHING;
-                        '''.format(username, email, generate_password_hash(password), username)
+        generate_user = '''insert into users (username, email, hash, wif) values ('{}', '{}', '{}', '{}') ON CONFLICT DO NOTHING;
+                        '''.format(username, email, generate_password_hash(password), wif)
 
         r = insert(generate_user)
         return r
