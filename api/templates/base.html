@@ -5,15 +5,22 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">	
 	<link rel="stylesheet" href="https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css"/>
 	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	<script src="https://unpkg.com/htmx.org@1.8.5" integrity="sha384-7aHh9lqPYGYZ7sTHvzP1t3BAfLhYSTy9ArHdP3Xsr9/3TlGurYgcPBoFmXX2TX/w" crossorigin="anonymous"></script>
+
 	{% block head %}
 		<title>tribs</title>
 	{% endblock %}
 </head>
 
-<body>
-	{% block content %}		
-	{% endblock %}
+<body class="h-auto cf w-100">
+	<div id="entry_menu" class="fl w-20 ns tc">
+		{% include 'menu.html' %}
+	</div>
+
+	<div class="content_view" class="fr w-80 ns">
+		{% block content %}		
+		{% endblock %}
+	</div>
 	<!-- todo: add footer here -->
 </body>
-
 </html>

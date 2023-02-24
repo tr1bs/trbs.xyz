@@ -11,7 +11,7 @@ except Exception as e:
     print(e)
 
 from api import db
-
+from api import utils
 
 
 """
@@ -60,6 +60,12 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/settings', methods=['GET', 'POST'])
+@login_required
+def settings():
+    return render_template('settings.html')
+
+
 @app.route('/error', methods=['GET', 'POST'])
 def error():
     return render_template('error.html')
@@ -90,13 +96,15 @@ def login():
 
         username = request.values.get('username')
         password = request.values.get('password')
-
+        data = None
         if username != None:      
             try:
-                data = select_user(username) # todo: sanitize this
+                data = db.select_user(username) # todo: sanitize this
+                # print(data)
             except Exception as e:
                 # pass to exception handler
                 print('error: ', str(e))
+            
 
             if data == []:
                 print('error: user is not registered')
@@ -108,7 +116,7 @@ def login():
             email = data[2]
             # todo: add support for new user fields here
             # todo: add retry
-            if check_password_hash(hash, password):
+            if db.check_password_hash(hash, password):
 
                 session['user_id'] = user_id
                 session['username'] = username
@@ -135,7 +143,7 @@ def logout():
     return jsonify(**{'result': 200, 'data': {'message': 'logout success'}})
 
 
-@app.route('/user_info', methods=['POST'])
+@app.route('/user_info', methods=['GET'])
 def user_info():
     if current_user.is_authenticated:
         resp = {"result": 200,
@@ -143,5 +151,29 @@ def user_info():
     else:
         resp = {"result": 401,
                 "data": {"message": "user no login"}}
+    return jsonify(**resp)
+
+
+@app.route('/user_settings', methods=['GET', 'POST'])
+def user_settings():
+    if current_user.is_authenticated:
+        if request.method == 'GET':
+            print('getting here')
+            u = db.select_user(current_user.username)
+            if not u[5]: 
+                r = {} 
+            else:
+                r = u[5]
+            resp = {"result": 200, "data": r}
+
+        if request.method == 'POST':
+            r = request.get_json() # can return jsonify
+            q = "UPDATE users SET settings='" + json.dumps(r) + "'" # fix this later            
+            pkg = db.update(q)
+
+            return jsonify(pkg)
+
+    else:
+        resp = {"result": 401, "data": {"message": "user no login"}}
     return jsonify(**resp)
 

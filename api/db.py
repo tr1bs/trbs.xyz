@@ -9,12 +9,13 @@ from api import utils
 class User(object):
     def __init__(self, user_id, username, email, wif):
         self.user_id = user_id
-        self.username= username
+        self.username = username
         self.authenticated = True
         self.email = email
         self.wif = wif
+        self.settings = ''
 
-    def to_json(self): return {"username": self.username, "email": self.email}
+    def to_json(self): return { "username": self.username, "email": self.email, "wif": self.wif }
 
     def is_active(self): return True
 
@@ -61,6 +62,20 @@ def insert(sql):
         cur.close()
         conn.close()
         return {"success": True, "message": "data inserted successfully" }
+    except Exception as e:
+        print(e)
+        return {"success": False, "message": str(e)}
+
+
+def update(sql):
+    try: 
+        conn = psycopg2.connect(connection)
+        cur = conn.cursor()
+        cur.execute(sql)
+        conn.commit()
+        cur.close()
+        conn.close()
+        return {"success": True, "message": "data updated successfully" }
     except Exception as e:
         print(e)
         return {"success": False, "message": str(e)}
