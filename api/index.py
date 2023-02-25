@@ -164,11 +164,12 @@ def user_settings():
                 r = {} 
             else:
                 r = u[5]
-            resp = {"result": 200, "data": r}
+            
+            return r, 200
 
         if request.method == 'POST':
             r = request.get_json() # can return jsonify
-            q = "UPDATE users SET settings='" + json.dumps(r) + "'" # fix this later            
+            q = "UPDATE users SET settings='" + json.dumps(r) + "' WHERE id = " + str(current_user.get_id()) # fix this later
             pkg = db.update(q)
 
             return jsonify(pkg)
