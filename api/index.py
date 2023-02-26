@@ -49,7 +49,7 @@ app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=2)
 def load_user(user_id):
     u = db.select_user_id(user_id)
     if u:
-        return db.User(u[0], u[1], u[2], u[3])
+        return db.User(u[0], u[1], u[2])
     else:
         return redirect('/register')
 
@@ -132,7 +132,7 @@ def login():
 
                 # wif = utils.create_wallet() bsv wallet creation
 
-                user = db.User(user_id, username, email, wif)
+                user = db.User(user_id, username, email)
                 login_user(user)
                 print('logged in: ', username)                
 
@@ -145,7 +145,7 @@ def login():
             return redirect('/error')
 
 
-@app.route('/logout', methods=['POST'])
+@app.route('/logout', methods=['GET'])
 def logout():
     logout_user()    
     return jsonify(**{'result': 200, 'data': {'message': 'logout success'}})
@@ -178,12 +178,18 @@ def user_info():
 def user_settings():
     if current_user.is_authenticated:
         if request.method == 'GET':
-            print('getting here')
             u = db.select_user(current_user.username)
-            if not u[5]: 
+            print(u)
+            if not u[4]: 
                 r = {} 
             else:
-                r = u[5]
+                r = u[1]
+                r = u[4]
+                r = {
+                    "username": u[1],
+                    "settings": u[4]
+                }
+                # r['username'] = current_user.username
             
             return r, 200
 
@@ -200,6 +206,7 @@ def user_settings():
 
 
 @app.route('/api/v1/get_user/<username>', methods=['GET'])
+@login_required
 def public_user(username):
     if request.method == 'GET':
         print('getting public user')
@@ -210,5 +217,24 @@ def public_user(username):
             pkg[column] = r[0][idx]
 
         return json.dumps(pkg), 200
+
+
+@app.route('/api/v1/add_user_wallet', methods=['POST'])
+@login_required
+def add_wallet():    
+    if request.method == 'POST':        
+        # print(session)
+        print('getting public user')
+        r = request.get_json() # can return jsonify    
+        q = '''update dir set eth_wallet = '{}' where username = '{}'; '''.format(r['address'], r['username'])
+        # sql = "UPDATE dir set address = '" + r['address'] + "' WHERE username = '" + r['username'] = "';"
+        pkg = db.update(q)
+        session['address'] = r['address']
+        print(session)
+
+        # return jsonify(pkg)
+        return json.dumps(r), 200
+
+
 
 

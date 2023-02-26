@@ -10,18 +10,22 @@
 	<div v-else>
 		  <div class="measure center cf pt2">
 		    <label for="name" class="f6 b db mb2">First Name <span class="normal black-60"></span></label>
-		    <input v-model="inj.first_name" id="first_name" class="input-reset ba b--black-20 pa2 mb2 db w-100" type="text" aria-describedby="name-desc">
-		    <small v-if="inj.first_name" id="name-desc" class="f6 black-60 db mb2">[[ inj.first_name ]]</small>
+		    <input v-model="inj.settings.first_name" id="first_name" class="input-reset ba b--black-20 pa2 mb2 db w-100" type="text" aria-describedby="name-desc">
+		    <small v-if="inj.settings.first_name" id="name-desc" class="f6 black-60 db mb2">[[ inj.settings.first_name ]]</small>
 
 		    <label for="name" class="f6 b db mb2">Last Name <span class="normal black-60"></span></label>
-		    <input v-model="inj.last_name" id="last_name" class="input-reset ba b--black-20 pa2 mb2 db w-100" type="text" aria-describedby="name-desc">
-		    <small v-if="inj.last_name" id="name-desc" class="f6 black-60 db mb2">[[ inj.last_name ]]</small>
+		    <input v-model="inj.settings.last_name" id="last_name" class="input-reset ba b--black-20 pa2 mb2 db w-100" type="text" aria-describedby="name-desc">
+		    <small v-if="inj.settings.last_name" id="name-desc" class="f6 black-60 db mb2">[[ inj.settings.last_name ]]</small>
 
 		    <label for="name" class="f6 b db mb2">Address <span class="normal black-60"></span></label>
-		    <input v-model="inj.address" id="address" class="input-reset ba b--black-20 pa2 mb2 db w-100" type="text" aria-describedby="name-desc">
-		    <small v-if="inj.address" id="name-desc" class="f6 black-60 db mb2">[[ inj.address ]]</small>
+		    <input v-model="inj.settings.address" id="address" class="input-reset ba b--black-20 pa2 mb2 db w-100" type="text" aria-describedby="name-desc">
+		    <small v-if="inj.settings.address" id="name-desc" class="f6 black-60 db mb2">[[ inj.settings.address ]]</small>
 
-		    <a @click="submit" class="f6 link dim br2 ba bw2 ph3 pv2 mb2 dib black">submit</a>
+		    <h2 class="mt3" v-if="account">[[ account ]]</h2>
+		    <a v-if="!account" @click="connect" class="f6 link dim br2 ba bw2 ph3 pv2 mb2 black db w-30 tc mt4">connect wallet</a>
+
+		    <a @click="submit" class="f6 link dim br2 ba bw2 ph3 pv2 mb2 black mt4 db w-30 tc">submit</a>
+		    
 		  </div>
 	</div>
 </div>

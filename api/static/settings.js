@@ -5,7 +5,8 @@ createApp({
         return {
             inj: 'loading settings....',
             loading: true,
-            initial: null
+            initial: null,
+            account: null
         }
     },
 
@@ -18,9 +19,18 @@ createApp({
 
     async mounted () {
         console.log('fetching user...')
+        if (typeof window.ethereum !== 'undefined') {
+          console.log('MetaMask is installed!');
+        }
+
+
         const pkg = await fetch('http://localhost:3000/api/v1/user_settings')
         this.inj = await pkg.json()
+        this.inj.settings = JSON.parse(this.inj.settings)
         this.initial = { ...this.inj }
+        this.initial.settings = { ...this.initial.settings }
+        this.isConnected()
+
         
         // if(!this.isEmpty(this.inj.data)) {
         //     this.inj.data = JSON.parse(JSON.parse(this.inj.data))
@@ -55,6 +65,47 @@ createApp({
             } else {
                 console.log('no changes were made')
             }
+        },
+
+        async isConnected() {
+            const accounts = await ethereum.request({method: 'eth_accounts'});       
+            if (accounts.length) {
+                this.account = accounts[0]
+                console.log(`You're connected to: ${accounts[0]}`);
+            } else {
+                console.log("Metamask is not connected");
+            }            
+        },
+
+        async connect() {
+            // could change this to ethers
+            const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+            const account = accounts[0]
+            this.account = account
+            // console.log(account)
+            this.add_user_wallet(account)
+        },
+
+        async add_user_wallet(address) {
+            // could change to multiple wallets per user
+            // change this to use env var for url
+            let c = {"address": address, "username": this.inj.username}
+            console.log(c)
+            const url = 
+            await fetch('http://localhost:3000/api/v1/add_user_wallet', {
+                method: 'POST',
+                body: JSON.stringify(c),
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                }
+            })
+            .catch(e => {
+                console.log(e)
+            })
+
+            console.log('added user wallet')
+
         },
 
         isEmpty(obj) {

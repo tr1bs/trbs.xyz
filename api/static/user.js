@@ -5,6 +5,7 @@ createApp({
         return {
             inj: 'loading settings....',
             loading: true,
+            test: 'blah'
             // initial: null
         }
     },
@@ -20,6 +21,7 @@ createApp({
         const pkg = await fetch(search)
         console.log(pkg)
         this.inj = await pkg.json()
+        
         // this.initial = { ...this.inj }
         // this.inj = await pkg.json()
         // this.initial = { ...this.inj }

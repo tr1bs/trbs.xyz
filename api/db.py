@@ -102,6 +102,10 @@ def select_user_id(id):
     sql = "SELECT * from users where id = '" + str(id) + "';"
     return select(sql)
 
+# def add_user_wallet(address, username):
+#     sql = "UPDATE dir set address = '" + address + "' WHERE username = '" + username = "';" 
+#     return select(sql)
+
 
 def insert(sql):
     try: 
