@@ -18,7 +18,7 @@ createApp({
 
     async mounted () {
         console.log('fetching user...')
-        const pkg = await fetch('http://localhost:3000/user_settings')
+        const pkg = await fetch('http://localhost:3000/api/v1/user_settings')
         this.inj = await pkg.json()
         this.initial = { ...this.inj }
         
@@ -35,7 +35,7 @@ createApp({
     methods: {
         async submit() {
             if (!this.deepEqual(this.inj, this.initial)) {
-                await fetch('http://localhost:3000/user_settings', {
+                await fetch('http://localhost:3000/api/v1/user_settings', {
                     method: 'POST',
                     body: JSON.stringify(this.inj),
                     headers: {

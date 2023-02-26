@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="vm">
+
+	<div v-if="loading">
+		<p>[[ inj.username ]]</p>
+	</div>
+
+	<div v-else>
+		  <div class="measure center cf pt2">
+		  	<h1>test</h1>
+		  </div>
+	</div>
+</div>
+
+<script src="{{ url_for('static', filename='user.js') }}"></script>
+{% endblock %}

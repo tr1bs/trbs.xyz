@@ -6,16 +6,46 @@ from werkzeug.utils import secure_filename
 from werkzeug.datastructures import FileStorage
 from api import utils
 
+'''
+Schemas:
+    Bio - text
+
+
+    Class public
+        autoinc id
+        username fkey
+        bio
+        tribs # gen in constructor ---what if change trib as distributed dao
+        followers # gen in constructor (auto add)
+        following?
+        wallet # gen in connection event
+        items # gen in constructor
+
+
+'''
+class Public(object):
+    def __init__(self, username, bio):
+        self.username = username
+        self.bio = bio
+        # self.tribs = []
+        # self.followers = ['admin']
+        # self.following = []
+        # self.image_url = ''
+
+    def to_json(self): return { "username": self.username, "bio": self.bio, "followers": self.followers, "following": self.following, "image_url": self.image_url }
+
+
+
+
 class User(object):
-    def __init__(self, user_id, username, email, wif):
+    def __init__(self, user_id, username, email):
         self.user_id = user_id
         self.username = username
         self.authenticated = True
         self.email = email
-        self.wif = wif
         self.settings = ''
 
-    def to_json(self): return { "username": self.username, "email": self.email, "wif": self.wif }
+    def to_json(self): return { "username": self.username, "email": self.email }
 
     def is_active(self): return True
 
@@ -23,7 +53,6 @@ class User(object):
 
     def is_authenticated(self): return self.authenticated
 
-    def is_anonymous(self): return False   
 
 
 connection = "dbname={} user={} host={} password={} port='5432'".format(os.getenv('PGDATABASE'), os.getenv('PGUSER'), os.getenv('PGHOST'), os.getenv('PGPASSWORD'))
@@ -42,10 +71,31 @@ def select(sql):
     else:
         return False
 
+def select_with_columns(sql):
+    conn = psycopg2.connect(connection)
+    cur = conn.cursor()
+    cur.execute(sql)
+    column_names = [desc[0] for desc in cur.description]
+    data = cur.fetchall()
+    cur.close()
+    conn.close()
+    print('selected data successfully: ', sql)
+
+    if data:
+        data = data[0]
+        return data, column_names
+    else:        
+        return False 
+
 
 def select_user(username):
     sql = "SELECT * from users where username = '" + username + "';"
     return select(sql)
+
+
+def select_public_user(username):
+    sql = "SELECT * from dir where username = '" + username + "';"
+    return select_with_columns(sql)
 
 
 def select_user_id(id):
@@ -88,14 +138,18 @@ def register_user(request):
     data = select_user(username)
 
     if not data:
-        wif = utils.create_wallet()
+        # wif = utils.create_wallet()
         # todo: sanitize this
             # add bsv wallet
-        generate_user = '''insert into users (username, email, hash, wif) values ('{}', '{}', '{}', '{}') ON CONFLICT DO NOTHING;
-                        '''.format(username, email, generate_password_hash(password), wif)
+        generate_user = '''insert into users (username, email, hash) values ('{}', '{}', '{}') ON CONFLICT DO NOTHING;
+                        '''.format(username, email, generate_password_hash(password))
+
+        generate_public = '''insert into dir (username) values ('{}')'''.format(username)
 
         r = insert(generate_user)
+        r = insert(generate_public) # add user input possibility
         return r
 
     else:
         return {"success": False, "message": "Failed registration"}
+

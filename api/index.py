@@ -51,13 +51,17 @@ def load_user(user_id):
     if u:
         return db.User(u[0], u[1], u[2], u[3])
     else:
-        return False
+        return redirect('/register')
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET'])
 @login_required
 def index():
-    return render_template('index.html')
+    # can login check or redir
+    if request.method == 'GET':
+        print(current_user)        
+        return render_template('index.html')
+
 
 
 @app.route('/settings', methods=['GET', 'POST'])
@@ -69,6 +73,10 @@ def settings():
 @app.route('/error', methods=['GET', 'POST'])
 def error():
     return render_template('error.html')
+
+@app.route('/u/<username>', methods=['GET', 'POST'])
+def get_user(username):
+    return render_template('user.html')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -122,7 +130,7 @@ def login():
                 session['username'] = username
                 session['email'] = email
 
-                wif = utils.create_wallet()
+                # wif = utils.create_wallet() bsv wallet creation
 
                 user = db.User(user_id, username, email, wif)
                 login_user(user)
@@ -143,18 +151,30 @@ def logout():
     return jsonify(**{'result': 200, 'data': {'message': 'logout success'}})
 
 
-@app.route('/user_info', methods=['GET'])
+# app.route('/u')
+# app.route('/u/<username>')
+# def dir_user():
+#     return render_template('user.html')
+
+
+
+@app.route('/api/v1/user_info', methods=['GET'])
 def user_info():
-    if current_user.is_authenticated:
-        resp = {"result": 200,
-                "data": current_user.to_json()}
+    if current_user:
+        if current_user.is_authenticated:
+            resp = {"result": 200,
+                    "data": current_user.to_json()}
+        else:
+            resp = {"result": 401,
+                    "data": {"message": "user no login"}}
+
     else:
         resp = {"result": 401,
                 "data": {"message": "user no login"}}
     return jsonify(**resp)
 
 
-@app.route('/user_settings', methods=['GET', 'POST'])
+@app.route('/api/v1/user_settings', methods=['GET', 'POST'])
 def user_settings():
     if current_user.is_authenticated:
         if request.method == 'GET':
@@ -177,4 +197,18 @@ def user_settings():
     else:
         resp = {"result": 401, "data": {"message": "user no login"}}
     return jsonify(**resp)
+
+
+@app.route('/api/v1/get_user/<username>', methods=['GET'])
+def public_user(username):
+    if request.method == 'GET':
+        print('getting public user')
+        r = db.select_public_user(username)
+        # print(r[0], r[1])
+        pkg = {}        
+        for idx, column in enumerate(r[1]):
+            pkg[column] = r[0][idx]
+
+        return json.dumps(pkg), 200
+
 
