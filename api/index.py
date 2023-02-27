@@ -107,6 +107,8 @@ def login():
 
         username = request.values.get('username')
         password = request.values.get('password')
+        print(username)
+        print(password)
         data = None
         if username != None:      
             try:
