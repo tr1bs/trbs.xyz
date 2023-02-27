@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="vm">
+	<p>items</p>
+	<a class="f6 link dim br2 ba bw2 ph3 pv2 mb2 dib black" href="/i/add">Button Text</a>
+
+</div>
+
+<script src="{{ url_for('static', filename='items.js') }}"></script>
+{% endblock %}

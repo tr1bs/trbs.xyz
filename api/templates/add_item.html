@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="vm">
+	<main class="pa4 black-80 helvetica">
+		<div class="measure center cf pt2">
+		  <label for="name" class="f6 b db mb2"> name <span class="normal black-60"></span></label>
+		  <input v-model="item.name" id="name" class="input-reset ba b--black-20 pa2 mb2 db w-100" type="text">
+
+		  <label for="brand" class="f6 b db mb2"> brand <span class="normal black-60"></span></label>
+		  <input v-model="item.brand" id="brand" class="input-reset ba b--black-20 pa2 mb2 db w-100" type="text">
+
+		  <label for="price" class="f6 b db mb2"> price <span class="normal black-60"></span></label>
+		  <input v-model="item.price" id="price" class="input-reset ba b--black-20 pa2 mb2 db w-100" type="text">
+
+		  <label for="images" class="f6 b db mb2"> images <span class="normal black-60"></span></label>
+		    <div class="w-100">
+		  	<input v-model="img" id="add_color" class="input-reset ba b--black-20 pa2 mb2 w-70 dib" type="text">
+		  	<button @click="addImg" class="f6 link dim br2 ba bw2 ph3 pv2 mb2 black mt4 db w-30 tc">add image</button>
+		  	<!-- <span v-for="url in item.img.urls">[[ url ]], </span> -->
+		  </div>
+
+		  <label for="colors" class="f6 b db mb2"> colors <span class="normal black-60"></span></label>
+		  <div class="w-100">
+			<input v-model="color" id="add_color" class="input-reset ba b--black-20 pa2 mb2 w-70 dib" type="text">
+			<button @click="addColor" class="f6 link dim br2 ba bw2 ph3 pv2 mb2 black mt4 db w-30 tc">add color</button>
+			<!-- <span v-if="item.img.colors.vals" v-for="color in item.img.colors.vals">[[ color ]], </span> -->
+		  </div>
+
+		  <label for="materials" class="f6 b db mb2"> materials <span class="normal black-60"></span></label>
+		  <div class="w-100">
+		  	<input v-model="material" id="add_material" class="input-reset ba b--black-20 pa2 mb2 w-70 dib" type="text">
+		  	<button @click="addMaterial" class="f6 link dim br2 ba bw2 ph3 pv2 mb2 black mt4 db w-30 tc">add material</button>
+		  	<!-- <span v-for="materials in item.img.materials.vals">[[ material ]], </span> -->
+		  </div>
+
+		  <label for="description" class="f6 b db mb2"> description <span class="normal black-60"></span></label>
+		  <textarea v-model="item.description" name="description" class="db border-box hover-black w-100 measure ba b--black-20 pa2 br2 mb2"></textarea>
+
+		  <label for="season" class="f6 b db mb2"> season <span class="normal black-60"></span></label>
+		  <input v-model="item.season" id="season" class="input-reset ba b--black-20 pa2 mb2 db w-100" type="text">
+
+		  <label for="source_url" class="f6 b db mb2"> source_url <span class="normal black-60"></span></label>
+		  <input v-model="item.source_url" id="source_url" class="input-reset ba b--black-20 pa2 mb2 db w-100" type="text">
+
+		  <label for="size" class="f6 b db mb2"> size <span class="normal black-60"></span></label>
+		  <input v-model="item.size" id="size" class="input-reset ba b--black-20 pa2 mb2 db w-100" type="text">
+
+		  <!-- add tags toggle and finalize taxonomy -->
+
+
+
+		  <!-- add for sale toggle here for now set as true -->
+
+
+
+
+		  <!-- <input v-model="item.name" id="name" class="input-reset ba b--black-20 pa2 mb2 db w-100" type="text"> -->
+		  
+		
+
+		  <a @click="submit" class="f6 link dim br2 ba bw2 ph3 pv2 mb2 black mt4 db w-20 tc">submit</a>
+		  
+		</div>
+	</main>
+</div>
+
+<script src="{{ url_for('static', filename='add_item.js') }}"></script>
+{% endblock %}

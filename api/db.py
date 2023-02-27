@@ -6,12 +6,16 @@ from werkzeug.utils import secure_filename
 from werkzeug.datastructures import FileStorage
 from api import utils
 
+from psycopg2.extras import Json
+from psycopg2.extensions import AsIs, register_adapter
+
+register_adapter(dict, Json)
 '''
 Schemas:
     Bio - text
 
 
-    Class public
+    Class dir
         autoinc id
         username fkey
         bio
@@ -20,6 +24,39 @@ Schemas:
         following?
         wallet # gen in connection event
         items # gen in constructor
+
+    Class items
+        uuid
+        owner fkey username in dir
+        owner address fkey address from dir @ username
+        brand varchar
+        colors jsonb
+        created timestamp
+        description varchar
+        for_sale bool
+        img jsonb
+        materials jsonb
+        name varchar
+        price varchar
+        reposted jsonb
+        saved jsonb
+        season varchar
+        status varchar ['for sale', 'escrow', 'not for sale'] can prob turn this into index type later
+        source_url varchar
+        size varchar
+        tags jsonb
+        tribs jsonb
+        tx jsonb
+
+    Class items_activity
+        item owner fkey items uuis
+        creator
+        type varchar ['listing', 'transaction']
+
+
+
+
+
 
 
 '''
@@ -112,6 +149,25 @@ def insert(sql):
         conn = psycopg2.connect(connection)
         cur = conn.cursor()
         cur.execute(sql)
+        conn.commit()
+        cur.close()
+        conn.close()
+        return {"success": True, "message": "data inserted successfully" }
+    except Exception as e:
+        print(e)
+        return {"success": False, "message": str(e)}
+
+def insert_item(columns, r):
+    try: 
+        conn = psycopg2.connect(connection)
+        cur = conn.cursor()
+        q = 'insert into items (%s) values %s'
+        exe = cur.mogrify(q, (
+            AsIs(','.join(columns)),
+            tuple([r[column] for column in columns])
+        ))
+        print(exe)
+        cur.execute(exe)
         conn.commit()
         cur.close()
         conn.close()

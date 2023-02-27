@@ -5,6 +5,9 @@ from datetime import datetime, date, timedelta
 import json
 from flask_login import LoginManager, current_user, login_user, login_required, logout_user, UserMixin
 import sys
+import uuid
+import shortuuid
+
 try:
     import pyAesCrypt
 except Exception as e:
@@ -219,6 +222,24 @@ def public_user(username):
         return json.dumps(pkg), 200
 
 
+@app.route('/api/v1/get_authed_pub', methods=['GET'])
+@login_required
+def public_user_authed():
+    if request.method == 'GET':
+        if current_user.is_authenticated:
+            username = current_user.username
+            print('getting public user')
+            r = db.select_public_user(username)
+            # print(r[0], r[1])
+            pkg = {}        
+            for idx, column in enumerate(r[1]):
+                pkg[column] = r[0][idx]
+
+            return json.dumps(pkg), 200
+        else:
+            return 500
+
+
 @app.route('/api/v1/add_user_wallet', methods=['POST'])
 @login_required
 def add_wallet():    
@@ -229,12 +250,46 @@ def add_wallet():
         q = '''update dir set eth_wallet = '{}' where username = '{}'; '''.format(r['address'], r['username'])
         # sql = "UPDATE dir set address = '" + r['address'] + "' WHERE username = '" + r['username'] = "';"
         pkg = db.update(q)
-        session['address'] = r['address']
+        session['address'] = r['address'] 
         print(session)
 
         # return jsonify(pkg)
         return json.dumps(r), 200
 
 
+@app.route('/api/v1/i/add', methods=['GET', 'POST'])
+@login_required
+def add_items():
+
+    if request.method == 'POST':
+        print('api - adding item')
+        r = request.get_json()
+        r['uuid'] = shortuuid.ShortUUID().random(length=16)
+        columns = [*r.keys()]
+        # print(columns)
+        pkg = db.insert_item(columns, r)
+        print(pkg)
+
+        return jsonify(pkg)
+
+
+
+@app.route('/i', methods=['GET', 'POST'])
+@login_required
+def items():
+    return render_template('items.html')
+
+
+@app.route('/i/add', methods=['GET', 'POST'])
+@login_required
+def add_item_form():
+    if request.method == 'GET':
+        return render_template('add_item.html')
+
+
+    # if request.method == 'POST':
+    #     user = current_user.username
+        # username = request.values.get('username')
+        # password = request.values.get('password')
 
 

@@ -12,3 +12,4 @@ pyAesCrypt==6.0.0
 pycparser==2.21
 six==1.16.0
 Werkzeug==2.2.2
+shortuuid==1.0.11
