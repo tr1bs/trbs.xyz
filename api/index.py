@@ -123,28 +123,29 @@ def login():
                 print('error: user is not registered')
 
             # print(data)
-            user_id = data[0]
-            hash = data[3]
-            username = data[1]
-            email = data[2]
-            # todo: add support for new user fields here
-            # todo: add retry
-            if db.check_password_hash(hash, password):
+            if data is not None:
+                user_id = data[0]
+                hash = data[3]
+                username = data[1]
+                email = data[2]
+                # todo: add support for new user fields here
+                # todo: add retry
+                if db.check_password_hash(hash, password):
 
-                session['user_id'] = user_id
-                session['username'] = username
-                session['email'] = email
+                    session['user_id'] = user_id
+                    session['username'] = username
+                    session['email'] = email
 
-                # wif = utils.create_wallet() bsv wallet creation
+                    # wif = utils.create_wallet() bsv wallet creation
 
-                user = db.User(user_id, username, email)
-                login_user(user)
-                print('logged in: ', username)                
+                    user = db.User(user_id, username, email)
+                    login_user(user)
+                    print('logged in: ', username)                
 
-                return redirect('/')
-            else:
-                # redirect / return error, or flash
-                return redirect('/error')
+                    return redirect('/')
+                else:
+                    # redirect / return error, or flash
+                    return redirect('/error')
 
         else:
             return redirect('/error')
@@ -287,6 +288,19 @@ def items():
 def add_item_form():
     if request.method == 'GET':
         return render_template('add_item.html')
+
+
+@app.route('/api/v1/i/get_all', methods=['GET'])
+@login_required
+def get_all_items():
+    if request.method == 'GET':
+        print('api - fetching items...')
+        r = db.select_all_items() #can paginate this later
+        pkg = {}
+        for item in r:
+            print(item, '\n')
+        
+        return json.dumps(r, default=utils.serialize_datetime), 200
 
 
     # if request.method == 'POST':

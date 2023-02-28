@@ -27,3 +27,4 @@
 - make the add funcs into an omnifunc
 - make status toggle new item
 - add tags and finalize taxonomy
+- add check for data is none on logins

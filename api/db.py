@@ -117,9 +117,25 @@ def select_with_columns(sql):
     cur.close()
     conn.close()
     print('selected data successfully: ', sql)
-
+    print(data, '\n')
     if data:
         data = data[0]
+        return data, column_names
+    else:        
+        return False
+
+
+def select_with_columns_item(sql):
+    conn = psycopg2.connect(connection)
+    cur = conn.cursor()
+    cur.execute(sql)
+    column_names = [desc[0] for desc in cur.description]
+    data = cur.fetchall()
+    cur.close()
+    conn.close()
+    print('selected data successfully: ', sql)
+    # print(data, '\n')
+    if data:        
         return data, column_names
     else:        
         return False 
@@ -142,6 +158,10 @@ def select_user_id(id):
 # def add_user_wallet(address, username):
 #     sql = "UPDATE dir set address = '" + address + "' WHERE username = '" + username = "';" 
 #     return select(sql)
+
+def select_all_items():
+    sql = "SELECT * from items;"
+    return select_with_columns_item(sql)
 
 
 def insert(sql):
