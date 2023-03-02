@@ -95,7 +95,7 @@ class User(object):
 connection = "dbname={} user={} host={} password={} port='5432'".format(os.getenv('PGDATABASE'), os.getenv('PGUSER'), os.getenv('PGHOST'), os.getenv('PGPASSWORD'))
 
 def select(sql):
-    conn = psycopg2.connect(connection)
+    conn = psycopg2.connect(connection, sslmode='require')
     cur = conn.cursor()
     cur.execute(sql)
     data = cur.fetchall()
@@ -109,7 +109,7 @@ def select(sql):
         return False
 
 def select_with_columns(sql):
-    conn = psycopg2.connect(connection)
+    conn = psycopg2.connect(connection, sslmode='require')
     cur = conn.cursor()
     cur.execute(sql)
     column_names = [desc[0] for desc in cur.description]
@@ -126,7 +126,7 @@ def select_with_columns(sql):
 
 
 def select_with_columns_item(sql):
-    conn = psycopg2.connect(connection)
+    conn = psycopg2.connect(connection, sslmode='require')
     cur = conn.cursor()
     cur.execute(sql)
     column_names = [desc[0] for desc in cur.description]
@@ -161,6 +161,11 @@ def select_user_id(id):
 
 def select_all_items():
     sql = "SELECT * from items;"
+    return select_with_columns_item(sql)
+
+
+def select_user_items(username):
+    sql = "SELECT * from items where owner = '" + username + "';"
     return select_with_columns_item(sql)
 
 

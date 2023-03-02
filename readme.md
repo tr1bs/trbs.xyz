@@ -1,8 +1,17 @@
 # App
 
+
 ## Run Locally: vercel dev
 
-# todo
+
+# Current order of ops
+- Need to fix prod ssl mode issue
+- create tx grouped
+- create some sort of DAO structure?
+- ipfs file upload and traversal
+	- essentially treat ipfs like s3
+
+## todo
 - add functionaity to toggle public for user email
 - refactor to sqlalchemy
 - include timestamps in schemas

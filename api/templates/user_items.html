@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="vm" class="debug-black">
+	<p>items</p>
+
+	<p v-for="item in inj">
+		[[ item ]]
+	</p>
+
+	<a class="f6 link dim br2 ba bw2 ph3 pv2 mb2 dib black" href="/i/add">Button Text</a>
+
+</div>
+
+<script src="{{ url_for('static', filename='user_items.js') }}"></script>
+{% endblock %}

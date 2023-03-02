@@ -113,7 +113,7 @@ def login():
         if username != None:      
             try:
                 data = db.select_user(username) # todo: sanitize this
-                # print(data)
+                print(data)
             except Exception as e:
                 # pass to exception handler
                 print('error: ', str(e))
@@ -122,8 +122,8 @@ def login():
             if data == []:
                 print('error: user is not registered')
 
-            # print(data)
-            if data is not None:
+            print(data)
+            if data is not None and data:
                 user_id = data[0]
                 hash = data[3]
                 username = data[1]
@@ -146,6 +146,8 @@ def login():
                 else:
                     # redirect / return error, or flash
                     return redirect('/error')
+            else:
+                print('invalid user') # flash to user here
 
         else:
             return redirect('/error')
@@ -290,6 +292,12 @@ def add_item_form():
         return render_template('add_item.html')
 
 
+@app.route('/i/u/<username>', methods=['GET'])
+@login_required
+def user_items(username):
+    return render_template('user_items.html')
+
+
 @app.route('/api/v1/i/get_all', methods=['GET'])
 @login_required
 def get_all_items():
@@ -297,6 +305,20 @@ def get_all_items():
         print('api - fetching items...')
         r = db.select_all_items() #can paginate this later
         pkg = {}
+        for item in r:
+            print(item, '\n')
+        
+        return json.dumps(r, default=utils.serialize_datetime), 200
+
+
+@app.route('/api/v1/i/u/<username>', methods=['GET'])
+@login_required
+def get_username_items(username):
+    if request.method == 'GET':
+        print('api - fetching user items...')
+        r = db.select_user_items(username) # can paginate this later
+
+        # print(r)
         for item in r:
             print(item, '\n')
         
