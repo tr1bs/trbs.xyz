@@ -37,3 +37,4 @@
 - make status toggle new item
 - add tags and finalize taxonomy
 - add check for data is none on logins
+- make null defaults for empty string

@@ -4,9 +4,13 @@
 <div id="vm" class="debug-black">
 	<p>items</p>
 
-	<p v-for="item in inj">
-		[[ item ]]
-	</p>
+	<div class="flex flex-wrap" v-if="!loading">
+		<a v-for="item in inj" class="helvetica morph-button-4 tc dib pa3 mr3 mb3 w-20-ns v-top hover-purple link black grow">
+			<h2 class="tl f3">Brand</h2>
+			<h2 class="tl f3">Name </h2>
+			<p>[[ item.name ]]</p>
+		</a>
+	</div>
 
 	<a class="f6 link dim br2 ba bw2 ph3 pv2 mb2 dib black" href="/i/add">Button Text</a>
 
