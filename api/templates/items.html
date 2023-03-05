@@ -1,18 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div id="vm" class="debug-black">
-	<p>items</p>
+<div id="vm" class="">
+	<h1 class="f1 helvetica">items</h1>
 
 	<div class="flex flex-wrap" v-if="!loading">
-		<a v-for="item in inj" class="helvetica morph-button-4 tc dib pa3 mr3 mb3 w-20-ns v-top hover-purple link black grow">
-			<h2 class="tl f3">Brand</h2>
-			<h2 class="tl f3">Name </h2>
-			<p>[[ item.name ]]</p>
+		<a v-for="item in inj" :href="'/i/' + item.uuid" class="helvetica morph-button-4 tc dib pa3 mr3 mb3 w-20-ns v-top hover-purple link black grow">
+			<h2 class="tl f3">[[ item.brand ]]</h2>
+			<h3 class="tl f4">[[ item.name ]] </h3>
+			<h4 class="tl f5">[[ item.price ]] ETH</h4>
+			<img :src="item.img.urls[0]" class="max">
 		</a>
 	</div>
 
-	<a class="f6 link dim br2 ba bw2 ph3 pv2 mb2 dib black" href="/i/add">Button Text</a>
+	<a class="f6 link dim br2 ba bw2 ph3 pv2 mb2 dib black" href="/i/add">add item</a>
 
 </div>
 

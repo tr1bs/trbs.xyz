@@ -9,17 +9,19 @@ createApp({
     },
 
     async mounted () {
-        console.log('fetching user...')
+        console.log('fetching item...')
         if (typeof window.ethereum !== 'undefined') {
           console.log('MetaMask is installed!');
         }
-
-        const pkg = await fetch('http://localhost:3000/api/v1/i/get_all')
+        const uuid = window.location.pathname.split('/')[2]
+        let url = 'http://localhost:3000/api/v1/i/get_item/' +  uuid
+        const pkg = await fetch(url)
         const r = await pkg.json()
         this.inj = []
         for (const item of r[0]) {                        
             this.inj.push(this.zip(r[1], item))
         }
+        this.inj = this.inj[0]
 
         this.loading = false
     },

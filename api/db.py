@@ -164,6 +164,11 @@ def select_all_items():
     return select_with_columns_item(sql)
 
 
+def select_single_item(uuid):
+    sql = "SELECT * from items where uuid ='" + uuid + "';"
+    return select_with_columns_item(sql)
+
+
 def select_user_items(username):
     sql = "SELECT * from items where owner = '" + username + "';"
     return select_with_columns_item(sql)

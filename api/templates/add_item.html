@@ -16,22 +16,27 @@
 		  <label for="images" class="f6 b db mb2"> images <span class="normal black-60"></span></label>
 		    <div class="w-100">
 		  	<input v-model="img" id="add_color" class="input-reset ba b--black-20 pa2 mb2 w-70 dib" type="text">
-		  	<button @click="addImg" class="f6 link dim br2 ba bw2 ph3 pv2 mb2 black mt4 db w-30 tc">add image</button>
-		  	<!-- <span v-for="url in item.img.urls">[[ url ]], </span> -->
+		  	<br> 
+		  	<span v-for="(url, index) in item.img.urls" :key="url">
+		  		<a :href="url" class="mr2" target="_blank">{[[ index + 1 ]]}</a>
+		  	</span>
+		  	<button @click="addImg" class="f6 link dim br2 ba bw2 ph3 pv2 mb2 black mt4 db w-30 tc">add image</button>		  	
 		  </div>
 
 		  <label for="colors" class="f6 b db mb2"> colors <span class="normal black-60"></span></label>
 		  <div class="w-100">
 			<input v-model="color" id="add_color" class="input-reset ba b--black-20 pa2 mb2 w-70 dib" type="text">
+			<br>
+			<span v-for="color in item.colors.vals"> [[ color ]],  </span>
 			<button @click="addColor" class="f6 link dim br2 ba bw2 ph3 pv2 mb2 black mt4 db w-30 tc">add color</button>
-			<!-- <span v-if="item.img.colors.vals" v-for="color in item.img.colors.vals">[[ color ]], </span> -->
 		  </div>
 
 		  <label for="materials" class="f6 b db mb2"> materials <span class="normal black-60"></span></label>
 		  <div class="w-100">
 		  	<input v-model="material" id="add_material" class="input-reset ba b--black-20 pa2 mb2 w-70 dib" type="text">
+		  	<br>
 		  	<button @click="addMaterial" class="f6 link dim br2 ba bw2 ph3 pv2 mb2 black mt4 db w-30 tc">add material</button>
-		  	<!-- <span v-for="materials in item.img.materials.vals">[[ material ]], </span> -->
+		  	<span v-for="material in item.materials.vals">[[ material ]], </span>
 		  </div>
 
 		  <label for="description" class="f6 b db mb2"> description <span class="normal black-60"></span></label>

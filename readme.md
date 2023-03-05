@@ -12,6 +12,24 @@
 	- essentially treat ipfs like s3
 
 ## todo
+
+### items
+- edit items 
+- finish tile layout
+- save functionality on tiles
+- add validation
+- remove test items
+- recreate tables with defaults to be empty string instead of null
+- create tagging system
+- item route
+- db driver for individual item
+- sort items by time
+- scaffold out OMS and prototype on testnet
+	- finally decide what kind of eth driver you will use (as well as smart contracts and the like)
+- scaffold out escrow scheme as well
+
+
+### Misc
 - add functionaity to toggle public for user email
 - refactor to sqlalchemy
 - include timestamps in schemas
@@ -38,3 +56,8 @@
 - add tags and finalize taxonomy
 - add check for data is none on logins
 - make null defaults for empty string
+- fix login fail route
+
+
+## changelog
+- item title

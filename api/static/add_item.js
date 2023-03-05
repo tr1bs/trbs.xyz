@@ -54,20 +54,23 @@ createApp({
         },
 
         addColor() {
+            console.log('adding color...')
             this.item.colors.count += 1
             this.item.colors.vals.push(this.color)
             this.color = ''
         },
 
         addImg() {
+            console.log('adding image...')
             this.item.img.count += 1
             this.item.img.urls.push(this.img)
             this.img = ''
         },
 
         addMaterial() {
+            console.log('adding material...')
             this.item.materials.count += 1
-            this.item.img.vals.push(this.material)
+            this.item.materials.vals.push(this.material)
             this.material = ''
         },
 
@@ -92,6 +95,24 @@ createApp({
                     .then(j => {
                         console.log(j)
                         alert(j.message)
+                        // add redirect here or clear tray
+                        this.item = {
+                            colors: {
+                                count: 0,
+                                vals: []
+                            },
+                            img: {
+                                count: 0,
+                                urls: []
+                            },
+                            materials: {
+                                count: 0,
+                                vals: []
+                            }
+                        }
+                        this.color = ''
+                        this.img = ''
+                        this.material = ''
                     })
             })
             .catch(e => {

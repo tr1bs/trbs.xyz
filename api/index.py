@@ -285,6 +285,12 @@ def items():
     return render_template('items.html')
 
 
+@app.route('/i/<uuid>', methods=['GET', 'POST'])
+@login_required
+def item(uuid):
+    return render_template('item.html')
+
+
 @app.route('/i/add', methods=['GET', 'POST'])
 @login_required
 def add_item_form():
@@ -305,6 +311,19 @@ def get_all_items():
         print('api - fetching items...')
         r = db.select_all_items() #can paginate this later
         pkg = {}
+        for item in r:
+            print(item, '\n')
+        
+        return json.dumps(r, default=utils.serialize_datetime), 200
+
+
+@app.route('/api/v1/i/get_item/<uuid>', methods=['GET'])
+@login_required
+def get_item(uuid):
+    if request.method == 'GET':
+        print('api - fetching item...')
+        r = db.select_single_item(uuid) #can paginate this later
+
         for item in r:
             print(item, '\n')
         

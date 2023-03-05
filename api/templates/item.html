@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="vm" class="flex flex-wrap helvetica">
+
+
+	<div id="" class="w-40 h-auto">
+		<img v-for="url in inj.img.urls" :src="url" class="center" v-if="inj">
+	</div>
+
+	<div id="" class="w-60 ph3 sticky h-auto" v-if="inj">
+		<h1>[[ inj.brand ]]</h1>
+		<h2>[[ inj.name ]]</h2>
+		<h2>[[ inj.price ]]</h2>
+		<p class="lh-copy measure-wide">[[ inj.description ]]</p>
+
+		<a class="f6 link dim br2 ba bw2 ph3 pv2 mb2 dib black" @click="buy()">purchase</a>
+	</div>
+
+</div>
+
+<script src="{{ url_for('static', filename='item.js') }}"></script>
+{% endblock %}
