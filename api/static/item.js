@@ -27,6 +27,21 @@ createApp({
     },
 
     methods: {
+        buy() {
+            const transactionParameters = {
+              to: this.item.owner_address,
+              from: ethereum.selectedAddress,
+              value: '0.0000A7C5AC471B478423',
+            }
+
+            const txHash = await ethereum.request({
+              method: 'eth_sendTransaction',
+              params: [transactionParameters],
+            })
+
+            // this is the outputted tx, need to put into a db for fufillment
+        },
+
         zip(arr1, arr2) {
           if (arr1.length !== arr2.length) return false;
           const obj = {};

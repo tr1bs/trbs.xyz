@@ -344,6 +344,18 @@ def get_username_items(username):
         return json.dumps(r, default=utils.serialize_datetime), 200
 
 
+@app.route('/api/v1/i/buy_item', methods=['POST'])
+@login_required
+def buy_item()
+    if request.method == 'POST':
+        print('api -- purchasing item...')
+        if current_user.authenticated:
+            username = current_user.username
+            
+            # get user address
+            
+
+
     # if request.method == 'POST':
     #     user = current_user.username
         # username = request.values.get('username')
