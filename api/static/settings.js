@@ -26,10 +26,26 @@ createApp({
 
         const pkg = await fetch('http://localhost:3000/api/v1/user_settings')
         this.inj = await pkg.json()
-        this.inj.settings = JSON.parse(this.inj.settings)
-        this.initial = { ...this.inj }
-        this.initial.settings = { ...this.initial.settings }
-        this.isConnected()
+        console.log(this.inj)
+
+        
+
+        // if(this.inj.settings) {
+        //     if(Object.keys(this.inj.settings).length) {
+        //         this.inj.settings = JSON.parse(this.inj.settings)    
+        //     }            
+        //     this.initial = { ...this.inj }
+        //     this.initial.settings = { ...this.initial.settings }
+        //     this.isConnected()           
+        // }  else {
+        //     this.inj.settings = {}
+        //     this.initial = {}
+        //     this.initial.settings = {}
+        // }
+
+        
+        
+        
 
         
         // if(!this.isEmpty(this.inj.data)) {
@@ -57,6 +73,7 @@ createApp({
                     r.json()
                         .then(j => {
                             console.log(j)
+                            alert(j)
                         })
                 })
                 .catch(e => {
@@ -89,6 +106,8 @@ createApp({
         async add_user_wallet(address) {
             // could change to multiple wallets per user
             // change this to use env var for url
+
+
             let c = {"address": address, "username": this.inj.username}
             console.log(c)
             const url = 

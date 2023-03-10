@@ -189,7 +189,10 @@ def user_settings():
             u = db.select_user(current_user.username)
             print(u)
             if not u[4]: 
-                r = {} 
+                r = {
+                    "username": u[1],
+                    "settings": {}
+                } 
             else:
                 r = u[1]
                 r = u[4]
@@ -251,7 +254,8 @@ def add_wallet():
     if request.method == 'POST':        
         # print(session)
         print('getting public user')
-        r = request.get_json() # can return jsonify    
+        r = request.get_json() # can return jsonify
+        print(r)    
         q = '''update dir set eth_wallet = '{}' where username = '{}'; '''.format(r['address'], r['username'])
         # sql = "UPDATE dir set address = '" + r['address'] + "' WHERE username = '" + r['username'] = "';"
         pkg = db.update(q)
@@ -346,14 +350,16 @@ def get_username_items(username):
 
 @app.route('/api/v1/i/buy_item', methods=['POST'])
 @login_required
-def buy_item()
+def buy_item():
     if request.method == 'POST':
-        print('api -- purchasing item...')
+        print('api -- purchasing item...')        
         if current_user.authenticated:
+            r = request.get_json()
             username = current_user.username
-            
+            # open request 
+
             # get user address
-            
+
 
 
     # if request.method == 'POST':

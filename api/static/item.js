@@ -1,6 +1,5 @@
 const { createApp } = Vue
-
-createApp({
+const app = createApp({
     data() {
         return {
             loading: 'getting items...',
@@ -27,17 +26,56 @@ createApp({
     },
 
     methods: {
-        buy() {
+        async buy() {            
+            const provider = new ethers.providers.Web3Provider(window.ethereum)
+            const EtherToWei = ethers.utils.parseUnits("0.0000000053","ether") // replace this with user inputted value
+            // console.log(EtherToWei, typeof(EtherToWei))
             const transactionParameters = {
-              to: this.item.owner_address,
+              to: this.inj.owner_address,
               from: ethereum.selectedAddress,
-              value: '0.0000A7C5AC471B478423',
+              value: EtherToWei.toString(),
             }
 
             const txHash = await ethereum.request({
               method: 'eth_sendTransaction',
               params: [transactionParameters],
+            }).catch(error => console.error(error));
+            
+            let tx = txHash
+            let scan = 'https://sepolia.etherscan.io/tx/' + tx // make toggle her for testnet vs etherscan
+
+            await fetch('http://localhost:3000/api/v1/i/buy_item', {
+                method: 'POST',
+                body: {
+                    "tx": txHash,
+                    "scan": scan,
+                    "address": ethereum.selectedAddress  
+                },
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                }
+            }) 
+            .then(r => {
+                r.json()
+                    .then(j => {
+                        console.log(j)
+                        alert(j)
+                    })
             })
+            .catch(e => {
+                console.log(e)
+            })            
+
+
+            // write to db here
+
+
+
+
+
+            // alert(txHash)
+
 
             // this is the outputted tx, need to put into a db for fufillment
         },
@@ -56,4 +94,5 @@ createApp({
 
 
     delimiters: ['[[', ']]']
-}).mount("#vm")
+})
+app.mount("#vm")

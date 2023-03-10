@@ -28,6 +28,20 @@
 	- finally decide what kind of eth driver you will use (as well as smart contracts and the like)
 - scaffold out escrow scheme as well
 
+### web3
+- eventually transfer to alchemy
+- need to add a global listener for account switch
+
+### settings
+- have to fix this object in general
+	- use test1 to see default behavior then go from there
+	- might need to delete settings in test2 user
+- need to defer to account available and not metamask account
+	- if metamask account and user account do not match then the user account needs to be updated to metamask account
+	- or support needs to be added to total historical orders
+	- thinking of issues of user data and past orders being out of sync but as long as events are recorded I think its ok
+- clear or redirect on successful settings update
+
 
 ### Misc
 - add functionaity to toggle public for user email
