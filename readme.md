@@ -5,11 +5,27 @@
 
 
 # Current order of ops
+- need to create a table for fufillment
+	private table for buyer/seller access only
+
+- need to create a table for hist
+	- item id
+	- datetime
+	- buyer
+	- seller
+	- ethscan url
+- in the future it will go to an escrow address for unlocks
+
+
 - Need to fix prod ssl mode issue
 - create tx grouped
 - create some sort of DAO structure?
 - ipfs file upload and traversal
 	- essentially treat ipfs like s3
+- replace localhost with prod env var
+- add transaction column to users
+- toggle off purchaseable when status is FUF
+
 
 ## todo
 

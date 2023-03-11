@@ -44,28 +44,34 @@ const app = createApp({
             let tx = txHash
             let scan = 'https://sepolia.etherscan.io/tx/' + tx // make toggle her for testnet vs etherscan
 
+            // get buyer from current.is_authenticated on the serverside
+            let inj = {
+                    "tx_hash": txHash,
+                    "url": scan,
+                    "item_id": this.inj.uuid,
+                    "seller": this.inj.owner,
+                    "seller_address": this.inj.owner_address,                    
+                    "buyer_address": ethereum.selectedAddress,   
+            }
             await fetch('http://localhost:3000/api/v1/i/buy_item', {
                 method: 'POST',
-                body: {
-                    "tx": txHash,
-                    "scan": scan,
-                    "address": ethereum.selectedAddress  
-                },
+                body: JSON.stringify(inj),
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
                 }
-            }) 
+            })
             .then(r => {
+                console.log(r)
                 r.json()
                     .then(j => {
                         console.log(j)
-                        alert(j)
+                        // alert(j)
                     })
             })
             .catch(e => {
                 console.log(e)
-            })            
+            })
 
 
             // write to db here

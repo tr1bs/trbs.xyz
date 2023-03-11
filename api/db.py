@@ -47,11 +47,33 @@ Schemas:
         tags jsonb
         tribs jsonb
         tx jsonb
+        transactions [ uuid of hist items ]
 
     Class items_activity
         item owner fkey items uuis
         creator
         type varchar ['listing', 'transaction']
+
+    class hist
+        - a history of all transactions
+
+        uuid
+        buyer
+        seller
+        ethscanTx
+        datetime
+        tx_hash
+        going to need a referrer eventually
+
+    class fufillment
+        uuid
+        buyer
+        seller
+        ethscan_tx
+        hist_id
+        datetime
+        eventually this table will become 'escrow' and have a signatures trey (count -> items)
+            - and an expiry for the tribunal
 
 
 
@@ -202,6 +224,47 @@ def insert_item(columns, r):
         cur.close()
         conn.close()
         return {"success": True, "message": "data inserted successfully" }
+    except Exception as e:
+        print(e)
+        return {"success": False, "message": str(e)}
+
+
+def insert_hist(columns, r):
+    try: 
+        conn = psycopg2.connect(connection)
+        cur = conn.cursor()
+        q = 'insert into hist (%s) values %s returning uuid;'
+        exe = cur.mogrify(q, (
+            AsIs(','.join(columns)),
+            tuple([r[column] for column in columns])
+        ))
+        print(exe)
+        cur.execute(exe)
+        conn.commit()
+        data = cur.fetchone()
+        cur.close()
+        conn.close()
+        return {"success": True, "message": data[0] }
+    except Exception as e:
+        print(e)
+        return {"success": False, "message": str(e)}
+
+
+def insert_fufillment(columns, r):
+    try: 
+        conn = psycopg2.connect(connection)
+        cur = conn.cursor()
+        q = 'insert into fufillment (%s) values %s'
+        exe = cur.mogrify(q, (
+            AsIs(','.join(columns)),
+            tuple([r[column] for column in columns])
+        ))
+        print(exe)
+        cur.execute(exe)
+        conn.commit()
+        cur.close()
+        conn.close()
+        return {"success": True, "message": data[0] }
     except Exception as e:
         print(e)
         return {"success": False, "message": str(e)}

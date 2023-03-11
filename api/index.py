@@ -354,8 +354,51 @@ def buy_item():
     if request.method == 'POST':
         print('api -- purchasing item...')        
         if current_user.authenticated:
+            # send to db
+            # need to wrap all this shit in a try catch 
             r = request.get_json()
-            username = current_user.username
+            print(r)
+            r['buyer'] = current_user.username
+            r['uuid'] = shortuuid.ShortUUID().random(length=16)
+
+            columns = [*r.keys()]
+            hist = db.insert_hist(columns, r)
+
+            q = '''UPDATE items set status = 'FUF' where uuid = '{}'; '''.format(r['item_id'])
+            update = db.update(q)
+            
+
+            fufillment = {
+                "uuid": shortuuid.ShortUUID().random(length=16),
+                "buyer": r['buyer'],
+                "seller": r['seller'],
+                "url": r['url'],
+                "tx_hash": r['tx_hash'],
+                "hist_id": hist['message']
+            }
+
+            fuf_keys = [*fufillment.keys()]
+            print(fufillment)
+
+            fufill = db.insert_fufillment(fuf_keys, fufillment)
+            print('hist')
+            print(hist)
+            print('fufill')
+            print(fufill)
+
+
+            return jsonify(fufill)
+
+        else:
+            print('user is not logged in')
+            resp = {"result": 401, "data": {"message": "user no login"}}
+            return jsonify(**resp)
+
+
+
+
+
+
             # open request 
 
             # get user address
